@@ -1,4 +1,4 @@
-class Videojuego {
+
     data class Videojuego(
         val id: Int? = null,
         val titulo: String,
@@ -6,4 +6,3 @@ class Videojuego {
         val anio: Int,
         val nota: Double
     )
-}

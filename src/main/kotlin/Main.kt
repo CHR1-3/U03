@@ -28,7 +28,7 @@ fun main() {
         )
     )
 
-    // Actualizar videojuego con id=1 (Aloe Vera)
+    // Actualizar videojuego con id=1
     VideojuegoDAO.actualizarVideojuegos(
         Videojuego(
             titulo = "Candy Crush",
@@ -40,4 +40,11 @@ fun main() {
 
     // Eliminar videojuego con id=2 (Lavanda)
     VideojuegoDAO.eliminarVideojuego(2)
+
+    // Transacción
+    VideojuegoDAO.anyadirALista(
+        1,
+        1,
+        "10/11/2026"
+    )
 }

@@ -1,3 +1,4 @@
+import java.sql.Connection
 import java.sql.SQLException
 
 object VideojuegoDAO {
@@ -24,7 +25,7 @@ object VideojuegoDAO {
 
     fun consultarVideojuegoPorId(id: Int): Videojuego? {
         var videojuego: Videojuego? = null
-        val sql = "SELECT * FROM plantas WHERE id = ?"
+        val sql = "SELECT * FROM videoojuegos WHERE id = ?"
         ConexionBD.getConnection()?.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
@@ -62,7 +63,7 @@ object VideojuegoDAO {
             println("Error: No se puede actualizar un vieojuego sin ID.")
             return
         }
-        val sql = "UPDATE videojuegos SET titulo = ?, genero = ?, anio = ?, anio = ? WHERE id = ?"
+        val sql = "UPDATE videojuegos SET titulo = ?, genero = ?, anio = ?, nota = ? WHERE id = ?"
         ConexionBD.getConnection()?.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, videojuego.titulo)
@@ -90,6 +91,47 @@ object VideojuegoDAO {
                     println("No se encontró ningun videojuego con ID $id para eliminar.")
                 }
             }
+        }
+    }
+
+    fun anyadirALista(idLista: Int, idVideojuego: Int, fecha: String){
+        var conn: Connection? = null
+
+        try {
+            conn = ConexionBD.getConnection()
+            conn?.autoCommit = false
+
+            val sqlSelect = "SELECT id FROM videojuegos WHERE id = ?"
+
+            conn?.prepareStatement(sqlSelect)?.use { stmt ->
+                stmt.setInt(1, idVideojuego)
+
+                val rs = stmt.executeQuery()
+
+                if (rs.next()) {
+                    throw SQLException("No existe un videojuego con el ID $idVideojuego")
+                }
+            }
+
+            val sqlInsert = "INSERT INTO listas_videojuegos(id_lista, id_videojuego, fecha_añadido)VALUES (?, ?, ?)"
+
+            conn?.prepareStatement(sqlInsert)?.use { stmt ->
+                stmt.setInt(1, idLista)
+                stmt.setInt(2, idVideojuego)
+                stmt.setString(3, fecha)
+
+                stmt.executeUpdate()
+            }
+
+            conn?.commit()
+            println("Videojuego añadido a lista con exito")
+        } catch (e: Exception) {
+            conn?.rollback()
+            println("Error: ${e.message}")
+            println("No se modifico nada")
+        } finally {
+            conn?.autoCommit = true
+            conn?.close()
         }
     }
 }

@@ -5,7 +5,7 @@ object VideojuegoDAO {
 
     fun listarVideojuegos(): List<Videojuego> {
         val lista = mutableListOf<Videojuego>()
-        val sql = "SELECT * FROM Videojuego"
+        val sql = "SELECT * FROM videojuegos"
         ConexionBD.getConnection()?.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 val rs = stmt.executeQuery()
@@ -25,7 +25,7 @@ object VideojuegoDAO {
 
     fun consultarVideojuegoPorId(id: Int): Videojuego? {
         var videojuego: Videojuego? = null
-        val sql = "SELECT * FROM videoojuegos WHERE id = ?"
+        val sql = "SELECT * FROM videojuegos WHERE id = ?"
         ConexionBD.getConnection()?.use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setInt(1, id)
@@ -108,7 +108,7 @@ object VideojuegoDAO {
 
                 val rs = stmt.executeQuery()
 
-                if (rs.next()) {
+                if (!rs.next()) {
                     throw SQLException("No existe un videojuego con el ID $idVideojuego")
                 }
             }
